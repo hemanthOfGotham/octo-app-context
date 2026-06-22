@@ -1,0 +1,26 @@
+project_name: octo
+databases:
+  - name: octo-postgres
+    type: postgres
+    # octo-app runs in its own Railway project, so it reaches Octo's Postgres
+    # over the public TCP proxy (TLS) rather than the private network.
+    host: acela.proxy.rlwy.net
+    port: 59360
+    database: railway
+    user: postgres
+    password: "{{ env('OCTO_PG_PASSWORD') }}"
+    schema_name: public
+    templates:
+      - columns
+      - preview
+    profiling:
+      refresh_policy: interval
+      interval_days: 1
+    include:
+      - "felix_*"
+      - "gong_*"
+    exclude: []
+repos: []
+notion: null
+llm: null
+slack: null
