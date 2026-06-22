@@ -23,10 +23,20 @@ All under `docs/fello-design-system/`:
 - `fello-logo.svg` / `fello-icon.svg` — the real logo. Never hand-draw a logo.
 
 ## How to build on-brand HTML
+**CRITICAL — to render, the HTML MUST be inside a ```html fenced code block.** A full HTML doc pasted as raw text will NOT render (it shows as text). Always wrap it:
+
+````
+```html
+<!DOCTYPE html>
+<html>… your Fello-styled page …</html>
+```
+````
+
 1. Read `colors_and_type.css` + `fello-components.css` (and the relevant `uploads/<component>.md`).
-2. Link/inline those stylesheets, then build markup with `.fello-*` classes + `var(--token)` values.
-3. Flow top-down (never vertically center a full page). Use `.fello-card` / `.fello-grid` for layout.
+2. Inline the styles in a `<style>` block (the artifact renders in a sandboxed iframe — external links won't load), then build markup with `var(--token)` values + `.fello-*`-style classes.
+3. Flow top-down (never vertically center a full page). Card/grid layout.
 4. Headings ≤ 24px, plum text, coral only for the primary CTA, charts in the series order above.
+5. Self-contained: one `<style>` block + markup. No external CSS/JS/font URLs (use `Inter, system-ui` fallback).
 
 ## How to style charts / dashboards / stories
 - Use the chart series order above (coral first).
