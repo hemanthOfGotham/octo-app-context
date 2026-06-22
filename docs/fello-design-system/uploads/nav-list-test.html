@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Navigation List — Visual Spec Test</title>
+<link rel="stylesheet" href="https://cdn.icomoon.io/231278/FelloIcons/style.css?ubpci2">
+<style>
+  :root {
+    --bg-primary: #FFFFFF;
+    --bg-primary_hover: #F1F4F7;
+    --bg-secondary: #F1F4F7;
+    --bg-tertiary: #E8ECF1;
+    --bg-brand-primary: #FDF1EF;
+    --bg-brand-primary_alt: #FDE7E3;
+    --bg-transparent: transparent;
+    --text-primary: #353E5A;
+    --text-secondary: #6B748E;
+    --text-tertiary: #9298A9;
+    --text-disabled: #BDC8D3;
+    --fg-brand-primary: #FF725C;
+    --fg-primary: #353E5A;
+    --border-secondary: #CCD6DC;
+    /* Badge */
+    --bg-brand-solid: #FF725C;
+    --text-primary_on-brand: #FFFFFF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+    background: #F1F4F7;
+    color: var(--text-primary);
+    padding: 32px;
+  }
+
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+  h2 { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #495883; }
+  .subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 32px; }
+  .section { margin-bottom: 40px; }
+  .row { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 16px; flex-wrap: wrap; }
+  .col-label {
+    font-size: 12px; color: var(--text-secondary); font-weight: 500;
+    min-width: 120px; padding-top: 6px;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid #E8ECF1;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+  .nav-container {
+    background: var(--bg-primary);
+    border-radius: 8px;
+    border: 1px solid var(--border-secondary);
+    padding: 8px 0;
+    width: 260px;
+  }
+
+  /* =============================================
+     TYPOGRAPHY
+  ============================================= */
+  .caption-md { font-size: 14px; line-height: 20px; font-weight: 500; }
+  .caption-sm { font-size: 12px; line-height: 18px; font-weight: 500; }
+  .caption-xs { font-size: 10px; line-height: 16px; font-weight: 500; }
+  .title-md   { font-size: 14px; line-height: 20px; font-weight: 600; }
+  .paragraph-sm { font-size: 12px; line-height: 18px; font-weight: 400; }
+
+  /* =============================================
+     WRAPPER — wraps each item, sets bg + outer padding
+  ============================================= */
+  .nav-item-wrapper {
+    display: block;
+    background: var(--bg-primary);
+    height: fit-content;
+  }
+  /* md (default): padding 2px 4px */
+  .nav-item-wrapper--md { padding: 2px 4px; }
+  /* sm: padding 0 4px */
+  .nav-item-wrapper--sm { padding: 0 4px; }
+  /* xs: no padding */
+  .nav-item-wrapper--xs { padding: 0; }
+  /* icon-only: no padding, transparent bg */
+  .nav-item-wrapper--icon-only { padding: 0; background: transparent; }
+
+  /* =============================================
+     ITEM — the clickable row
+  ============================================= */
+  .nav-item {
+    position: relative;
+    border-radius: 4px;
+    width: 100%;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    color: var(--text-primary);
+    user-select: none;
+    outline: none;
+    transition: background 150ms ease;
+  }
+
+  /* --- Size padding --- */
+  .nav-item--xs { padding: 6px 12px; }
+  .nav-item--sm { padding: 6px 12px; }
+  .nav-item--md { padding: 8px 12px; }
+  .nav-item--icon-only {
+    border-radius: 8px;
+    padding: 8px;
+    justify-content: center;
+  }
+
+  /* --- States --- */
+  .nav-item--default:hover,
+  .nav-item--default:focus-visible {
+    background: var(--bg-primary_hover);
+  }
+  .nav-item--active {
+    background: var(--bg-brand-primary);
+    color: var(--text-primary);
+  }
+  .nav-item--active:hover,
+  .nav-item--active:focus-visible {
+    background: var(--bg-brand-primary_alt);
+  }
+  .nav-item--focus {
+    background: var(--bg-primary_hover);
+  }
+  .nav-item--focus.nav-item--active {
+    background: var(--bg-brand-primary_alt);
+  }
+
+  /* =============================================
+     ICON inside nav item
+  ============================================= */
+  .nav-item__icon {
+    display: inline-flex;
+    align-items: center;
+    color: var(--fg-primary);   /* default: dark navy */
+    transition: transform 300ms ease-in;
+    flex-shrink: 0;
+  }
+  .nav-item__icon--active { color: var(--fg-brand-primary); }  /* coral when active */
+  .nav-item__icon--rotate { transform: rotate(90deg); }
+  .nav-item__icon i::before { color: inherit !important; }
+
+  /* Icon sizes */
+  .icon-xs, .icon-sm { font-size: 20px; }
+  .icon-md { font-size: 24px; }
+  .icon-16 { font-size: 16px; }
+
+  /* =============================================
+     LEFT CONTENT (icon + text group)
+  ============================================= */
+  .nav-item__left {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    flex: 1;
+  }
+  .nav-item__text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nav-item__supporting { color: var(--text-secondary); }
+
+  /* =============================================
+     TRAILING BUTTON
+  ============================================= */
+  .nav-item__trailing {
+    flex-shrink: 0;
+    margin: -2px -8px -2px 0;
+  }
+  .trailing-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .trailing-btn:hover { background: var(--bg-secondary); }
+  .trailing-btn i::before { color: inherit !important; }
+
+  /* =============================================
+     BADGE (simple inline badge)
+  ============================================= */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    background: var(--bg-brand-solid);
+    color: var(--text-primary_on-brand);
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 16px;
+    padding: 0 6px;
+    flex-shrink: 0;
+  }
+
+  /* =============================================
+     BRANCH LINES (for nested list items)
+     Children container: padding-left 32px, vertical line at left 22px
+  ============================================= */
+  .nav-children {
+    position: relative;
+    padding-left: 32px;
+    overflow: hidden;
+  }
+  /* Vertical branch line connecting parent to children */
+  .nav-children:not(.nav-children--no-children)::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 22px;
+    height: 100%;
+    border-left: 1px solid var(--border-secondary);
+  }
+
+  /* L-shaped branch connector on each child */
+  .nav-item--branch {
+    position: absolute;
+    top: 0;
+    left: -10px;
+    width: 10px;
+    height: 50%;
+    border-left: 1px solid var(--border-secondary);
+    border-bottom: 1px solid var(--border-secondary);
+    border-bottom-left-radius: 4px;
+    z-index: 1;
+  }
+
+  /* Last child node hides the lower half of the vertical line */
+  .nav-item--last-child::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -12px;
+    width: 4px;
+    height: 100%;
+    background-color: var(--bg-primary);
+  }
+
+  /* =============================================
+     GROUP HEADER
+  ============================================= */
+  .nav-group-header {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 6px 12px;
+  }
+
+  /* =============================================
+     DRAG ICON (hidden unless hover)
+  ============================================= */
+  .drag-icon {
+    position: absolute;
+    left: 0;
+    visibility: hidden;
+    display: inline-flex;
+  }
+  .nav-item:hover .drag-icon { visibility: visible; }
+
+</style>
+</head>
+<body>
+
+<h1>Navigation List — Spec Validation</h1>
+<p class="subtitle">Computed values: caption-md = 14/20/500 · caption-sm = 12/18/500 · title-md = 14/20/600 · paragraph-sm = 12/18/400 · border-radius 4px (items), 8px (icon-only)</p>
+
+<!-- ============================================================ -->
+<!-- SECTION 1: STATES -->
+<!-- ============================================================ -->
+<div class="section">
+  <h2>1. States — Size md</h2>
+  <div class="card">
+    <div class="row">
+      <span class="col-label">Default</span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--md">
+          <div class="nav-item nav-item--md nav-item--default caption-md" tabindex="0">
+            <div class="nav-item__left">
+              <span class="nav-item__icon"><i class="fello-icon-folder-list icon-md"></i></span>
+              <span class="nav-item__text">Navigation List Item</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-label">Hover</span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--md">
+          <div class="nav-item nav-item--md caption-md" style="background:var(--bg-primary_hover);">
+            <div class="nav-item__left">
+              <span class="nav-item__icon"><i class="fello-icon-folder-list icon-md"></i></span>
+              <span class="nav-item__text">Navigation List Item</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-label">Active (current)</span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--md">
+          <div class="nav-item nav-item--md nav-item--active caption-md" tabindex="0">
+            <div class="nav-item__left">
+              <span class="nav-item__icon nav-item__icon--active"><i class="fello-icon-folder-list icon-md"></i></span>
+              <span class="nav-item__text">Navigation List Item</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-label">Active + hover</span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--md">
+          <div class="nav-item nav-item--md caption-md" style="background:var(--bg-brand-primary_alt);">
+            <div class="nav-item__left">
+              <span class="nav-item__icon nav-item__icon--active"><i class="fello-icon-folder-list icon-md"></i></span>
+              <span class="nav-item__text">Navigation List Item</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-label">Focus (keyboard)</span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--md">
+          <div class="nav-item nav-item--md nav-item--focus caption-md">
+            <div class="nav-item__left">
+              <span class="nav-item__icon"><i class="fello-icon-folder-list icon-md"></i></span>
+              <span class="nav-item__text">Navigation List Item</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: SIZES -->
+<!-- ============================================================ -->
+<div class="section">
+  <h2>2. Sizes</h2>
+  <div class="card">
+
+    <div class="row">
+      <span class="col-label">xs (10px/16/500)<br><small style="color:#9298A9">wrapper: no padding<br>item: 6px 12px</small></span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--xs">
+          <div class="nav-item nav-item--xs nav-item--default caption-xs" tabindex="0">
+            <div class="nav-item__left">
+              <span class="nav-item__icon"><i class="fello-icon-folder-list icon-xs"></i></span>
+              <span class="nav-item__text">Extra Small</span>
+            </div>
+          </div>
+        </div>
+        <div class="nav-item-wrapper nav-item-wrapper--xs">
+          <div class="nav-item nav-item--xs nav-item--active caption-xs" tabindex="0">
+            <div class="nav-item__left">
+              <span class="nav-item__icon nav-item__icon--active"><i class="fello-icon-folder-list icon-xs"></i></span>
+              <span class="nav-item__text">Extra Small Active</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-label">sm (12px/18/500)<br><small style="color:#9298A9">wrapper: 0 4px<br>item: 6px 12px</small></span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--sm">
+          <div class="nav-item nav-item--sm nav-item--default caption-sm" tabindex="0">
+            <div class="nav-item__left">
+              <span class="nav-item__icon"><i class="fello-icon-folder-list icon-sm"></i></span>
+              <span class="nav-item__text">Small</span>
+            </div>
+          </div>
+        </div>
+        <div class="nav-item-wrapper nav-item-wrapper--sm">
+          <div class="nav-item nav-item--sm nav-item--active caption-sm" tabindex="0">
+            <div class="nav-item__left">
+              <span class="nav-item__icon nav-item__icon--active"><i class="fello-icon-folder-list icon-sm"></i></span>
+              <span class="nav-item__text">Small Active</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-label">md (14px/20/500)<br><small style="color:#9298A9">wrapper: 2px 4px<br>item: 8px 12px</small></span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--md">
+          <div class="nav-item nav-item--md nav-item--default caption-md" tabindex="0">
+            <div class="nav-item__left">
+              <span class="nav-item__icon"><i class="fello-icon-folder-list icon-md"></i></span>
+              <span class="nav-item__text">Medium</span>
+            </div>
+          </div>
+        </div>
+        <div class="nav-item-wrapper nav-item-wrapper--md">
+          <div class="nav-item nav-item--md nav-item--active caption-md" tabindex="0">
+            <div class="nav-item__left">
+              <span class="nav-item__icon nav-item__icon--active"><i class="fello-icon-folder-list icon-md"></i></span>
+              <span class="nav-item__text">Medium Active</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: ICON VARIANTS -->
+<!-- ============================================================ -->
+<div class="section">
+  <h2>3. Icon & Content Variants — Size md</h2>
+  <div class="card">
+
+    <div class="row">
+      <span class="col-label">No icon</span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--md">
+          <div class="nav-item nav-item--md nav-item--default caption-md">
+            <div class="nav-item__left">
+              <span class="nav-item__text">No icon</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-label">Leading icon</span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--md">
+          <div class="nav-item nav-item--md nav-item--default caption-md">
+            <div class="nav-item__left">
+              <span class="nav-item__icon"><i class="fello-icon-folder-list icon-md"></i></span>
+              <span class="nav-item__text">Leading Icon</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-label">Trailing icon<br><small style="color:#9298A9">16px</small></span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--md">
+          <div class="nav-item nav-item--md nav-item--default caption-md">
+            <div class="nav-item__left">
+              <span class="nav-item__text">Trailing Icon</span>
+            </div>
+            <span class="nav-item__icon"><i class="fello-icon-folder-list icon-16"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-label">Both icons</span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--md">
+          <div class="nav-item nav-item--md nav-item--default caption-md">
+            <div class="nav-item__left">
+              <span class="nav-item__icon"><i class="fello-icon-folder-list icon-md"></i></span>
+              <span class="nav-item__text">Leading + Trailing</span>
+            </div>
+            <span class="nav-item__icon"><i class="fello-icon-chevron-arrow-right icon-16"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-label">Trailing button<br><small style="color:#9298A9">margin -2px -8px -2px</small></span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--md">
+          <div class="nav-item nav-item--md nav-item--default caption-md">
+            <div class="nav-item__left">
+              <span class="nav-item__icon"><i class="fello-icon-folder-list icon-md"></i></span>
+              <span class="nav-item__text">Trailing Button</span>
+            </div>
+            <span class="nav-item__trailing">
+              <button class="trailing-btn"><i class="fello-icon-dots-option-vertical"></i></button>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-label">Supporting text<br>+ Badge</span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--md">
+          <div class="nav-item nav-item--md nav-item--default caption-md">
+            <div class="nav-item__left">
+              <span class="nav-item__icon"><i class="fello-icon-folder-list icon-md"></i></span>
+              <div>
+                <p class="nav-item__text">Navigation List Item</p>
+                <p class="nav-item__supporting paragraph-sm">Supporting Text</p>
+              </div>
+              <span class="badge">New</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-label">Icon only<br><small style="color:#9298A9">24px · radius 8px<br>transparent wrapper</small></span>
+      <div style="display:flex;gap:8px;align-items:center">
+        <!-- Default -->
+        <div class="nav-item-wrapper nav-item-wrapper--icon-only">
+          <div class="nav-item nav-item--icon-only nav-item--default">
+            <span class="nav-item__icon"><i class="fello-icon-folder-list" style="font-size:24px"></i></span>
+          </div>
+        </div>
+        <!-- Active -->
+        <div class="nav-item-wrapper nav-item-wrapper--icon-only">
+          <div class="nav-item nav-item--icon-only nav-item--active">
+            <span class="nav-item__icon nav-item__icon--active"><i class="fello-icon-folder-list" style="font-size:24px"></i></span>
+          </div>
+        </div>
+        <!-- Hover simulated -->
+        <div class="nav-item-wrapper nav-item-wrapper--icon-only">
+          <div class="nav-item nav-item--icon-only" style="background:var(--bg-primary_hover)">
+            <span class="nav-item__icon"><i class="fello-icon-folder-list" style="font-size:24px"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: NAVIGATION TITLE (expandable) -->
+<!-- ============================================================ -->
+<div class="section">
+  <h2>4. Navigation Title — Expandable (xs size)</h2>
+  <p style="font-size:13px;color:#6B748E;margin-bottom:12px;">isNavigationTitle=true: chevron-arrow-right icon (leading, rotates 90° when expanded), text uses title-md (600)</p>
+  <div class="card">
+    <div class="row">
+      <span class="col-label">Collapsed</span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--xs">
+          <div class="nav-item nav-item--xs nav-item--default title-md" style="cursor:pointer;">
+            <div class="nav-item__left">
+              <span class="nav-item__icon">
+                <i class="fello-icon-chevron-arrow-right icon-xs"></i>
+              </span>
+              <span class="nav-item__text">Navigation Title</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-label">Expanded<br><small style="color:#9298A9">chevron rotates 90°</small></span>
+      <div style="width:260px">
+        <div class="nav-item-wrapper nav-item-wrapper--xs">
+          <div class="nav-item nav-item--xs nav-item--default title-md" style="cursor:pointer;">
+            <div class="nav-item__left">
+              <span class="nav-item__icon nav-item__icon--rotate">
+                <i class="fello-icon-chevron-arrow-right icon-xs"></i>
+              </span>
+              <span class="nav-item__text">Navigation Title</span>
+            </div>
+          </div>
+        </div>
+        <!-- Children -->
+        <div class="nav-children">
+          <div class="nav-item-wrapper nav-item-wrapper--xs">
+            <div class="nav-item nav-item--xs nav-item--default caption-xs" style="position:relative;">
+              <span class="nav-item--branch"></span>
+              <div class="nav-item__left">
+                <span class="nav-item__icon"><i class="fello-icon-folder-list icon-xs"></i></span>
+                <span class="nav-item__text">List Item Name</span>
+              </div>
+            </div>
+          </div>
+          <div class="nav-item-wrapper nav-item-wrapper--xs">
+            <div class="nav-item nav-item--xs nav-item--active caption-xs" style="position:relative;">
+              <span class="nav-item--branch"></span>
+              <div class="nav-item__left">
+                <span class="nav-item__icon nav-item__icon--active"><i class="fello-icon-folder-list icon-xs"></i></span>
+                <span class="nav-item__text">List Item Active</span>
+              </div>
+            </div>
+          </div>
+          <div class="nav-item-wrapper nav-item-wrapper--xs">
+            <div class="nav-item nav-item--xs nav-item--default nav-item--last-child caption-xs" style="position:relative;">
+              <span class="nav-item--branch"></span>
+              <div class="nav-item__left">
+                <span class="nav-item__icon"><i class="fello-icon-folder-list icon-xs"></i></span>
+                <span class="nav-item__text">Last Item</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <span class="col-label">Nested 2 levels</span>
+      <div style="width:260px">
+        <!-- Level 1 title -->
+        <div class="nav-item-wrapper nav-item-wrapper--xs">
+          <div class="nav-item nav-item--xs nav-item--default title-md">
+            <div class="nav-item__left">
+              <span class="nav-item__icon nav-item__icon--rotate"><i class="fello-icon-chevron-arrow-right icon-xs"></i></span>
+              <span class="nav-item__text">Parent Title</span>
+            </div>
+          </div>
+        </div>
+        <!-- L1 children -->
+        <div class="nav-children">
+          <div class="nav-item-wrapper nav-item-wrapper--xs">
+            <div class="nav-item nav-item--xs nav-item--default caption-xs" style="position:relative;">
+              <span class="nav-item--branch"></span>
+              <div class="nav-item__left">
+                <span class="nav-item__icon"><i class="fello-icon-folder-list icon-xs"></i></span>
+                <span class="nav-item__text">Child 1</span>
+              </div>
+            </div>
+          </div>
+          <!-- Nested title with children -->
+          <div class="nav-item-wrapper nav-item-wrapper--xs">
+            <div class="nav-item nav-item--xs nav-item--default title-md" style="position:relative;">
+              <span class="nav-item--branch"></span>
+              <div class="nav-item__left">
+                <span class="nav-item__icon nav-item__icon--rotate"><i class="fello-icon-chevron-arrow-right icon-xs"></i></span>
+                <span class="nav-item__text">Nested Title</span>
+              </div>
+            </div>
+          </div>
+          <!-- L2 children -->
+          <div class="nav-children" style="padding-left:0;">
+            <div style="padding-left:32px;position:relative;">
+              <div class="nav-children">
+                <div class="nav-item-wrapper nav-item-wrapper--xs">
+                  <div class="nav-item nav-item--xs nav-item--default caption-xs" style="position:relative;">
+                    <span class="nav-item--branch"></span>
+                    <div class="nav-item__left">
+                      <span class="nav-item__icon"><i class="fello-icon-folder-list icon-xs"></i></span>
+                      <span class="nav-item__text">Grandchild 1</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="nav-item-wrapper nav-item-wrapper--xs">
+                  <div class="nav-item nav-item--xs nav-item--default nav-item--last-child caption-xs" style="position:relative;">
+                    <span class="nav-item--branch"></span>
+                    <div class="nav-item__left">
+                      <span class="nav-item__icon"><i class="fello-icon-folder-list icon-xs"></i></span>
+                      <span class="nav-item__text">Grandchild 2</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="nav-item-wrapper nav-item-wrapper--xs">
+            <div class="nav-item nav-item--xs nav-item--default nav-item--last-child caption-xs" style="position:relative;">
+              <span class="nav-item--branch"></span>
+              <div class="nav-item__left">
+                <span class="nav-item__icon"><i class="fello-icon-folder-list icon-xs"></i></span>
+                <span class="nav-item__text">Last Child</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: GROUP HEADER -->
+<!-- ============================================================ -->
+<div class="section">
+  <h2>5. Group Header + Navigation List</h2>
+  <p style="font-size:13px;color:#6B748E;margin-bottom:12px;">title-md (14px/20px/600) · padding: 6px 12px</p>
+  <div class="card">
+    <div class="row">
+      <div style="width:260px">
+        <div class="nav-container" style="padding:4px 0;">
+          <!-- Group 1 -->
+          <div class="nav-group-header">Group One</div>
+          <div class="nav-item-wrapper nav-item-wrapper--md">
+            <div class="nav-item nav-item--md nav-item--default caption-md">
+              <div class="nav-item__left">
+                <span class="nav-item__icon"><i class="fello-icon-folder-list icon-md"></i></span>
+                <span class="nav-item__text">Item A</span>
+              </div>
+            </div>
+          </div>
+          <div class="nav-item-wrapper nav-item-wrapper--md">
+            <div class="nav-item nav-item--md nav-item--active caption-md">
+              <div class="nav-item__left">
+                <span class="nav-item__icon nav-item__icon--active"><i class="fello-icon-folder-list icon-md"></i></span>
+                <span class="nav-item__text">Item B (active)</span>
+              </div>
+            </div>
+          </div>
+          <!-- Group 2 -->
+          <div class="nav-group-header" style="margin-top:4px;">Group Two</div>
+          <div class="nav-item-wrapper nav-item-wrapper--md">
+            <div class="nav-item nav-item--md nav-item--default caption-md">
+              <div class="nav-item__left">
+                <span class="nav-item__icon"><i class="fello-icon-folder-list icon-md"></i></span>
+                <span class="nav-item__text">Item C</span>
+              </div>
+            </div>
+          </div>
+          <div class="nav-item-wrapper nav-item-wrapper--md">
+            <div class="nav-item nav-item--md nav-item--default caption-md">
+              <div class="nav-item__left">
+                <span class="nav-item__icon"><i class="fello-icon-folder-list icon-md"></i></span>
+                <span class="nav-item__text">Item D</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 6: INTERACTIVE DEMO (click to toggle) -->
+<!-- ============================================================ -->
+<div class="section">
+  <h2>6. Interactive Demo — Click to toggle active / expand</h2>
+  <div class="card">
+    <div class="row">
+      <div style="width:280px">
+        <div class="nav-container" style="padding:4px 0;" id="interactive-list">
+
+          <div class="nav-item-wrapper nav-item-wrapper--xs">
+            <div class="nav-item nav-item--xs title-md nav-item--default" onclick="toggleExpand(this)" style="cursor:pointer;" data-expanded="true">
+              <div class="nav-item__left">
+                <span class="nav-item__icon nav-item__icon--rotate chevron-icon"><i class="fello-icon-chevron-arrow-right icon-xs"></i></span>
+                <span class="nav-item__text">Contacts</span>
+              </div>
+            </div>
+          </div>
+          <div class="nav-children expand-target">
+            <div class="nav-item-wrapper nav-item-wrapper--xs">
+              <div class="nav-item nav-item--xs nav-item--default caption-xs" style="position:relative;" onclick="setActive(this)">
+                <span class="nav-item--branch"></span>
+                <div class="nav-item__left">
+                  <span class="nav-item__icon"><i class="fello-icon-folder-list icon-xs"></i></span>
+                  <span class="nav-item__text">All Contacts</span>
+                </div>
+              </div>
+            </div>
+            <div class="nav-item-wrapper nav-item-wrapper--xs">
+              <div class="nav-item nav-item--xs nav-item--active caption-xs" style="position:relative;" onclick="setActive(this)">
+                <span class="nav-item--branch"></span>
+                <div class="nav-item__left">
+                  <span class="nav-item__icon nav-item__icon--active"><i class="fello-icon-folder-list icon-xs"></i></span>
+                  <span class="nav-item__text">My Pipeline</span>
+                </div>
+              </div>
+            </div>
+            <div class="nav-item-wrapper nav-item-wrapper--xs">
+              <div class="nav-item nav-item--xs nav-item--default nav-item--last-child caption-xs" style="position:relative;" onclick="setActive(this)">
+                <span class="nav-item--branch"></span>
+                <div class="nav-item__left">
+                  <span class="nav-item__icon"><i class="fello-icon-folder-list icon-xs"></i></span>
+                  <span class="nav-item__text">Archived</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-item-wrapper nav-item-wrapper--xs">
+            <div class="nav-item nav-item--xs title-md nav-item--default" onclick="toggleExpand(this)" style="cursor:pointer;" data-expanded="false">
+              <div class="nav-item__left">
+                <span class="nav-item__icon chevron-icon"><i class="fello-icon-chevron-arrow-right icon-xs"></i></span>
+                <span class="nav-item__text">Properties</span>
+              </div>
+            </div>
+          </div>
+          <div class="nav-children expand-target" style="display:none;">
+            <div class="nav-item-wrapper nav-item-wrapper--xs">
+              <div class="nav-item nav-item--xs nav-item--default caption-xs" style="position:relative;" onclick="setActive(this)">
+                <span class="nav-item--branch"></span>
+                <div class="nav-item__left">
+                  <span class="nav-item__icon"><i class="fello-icon-folder-list icon-xs"></i></span>
+                  <span class="nav-item__text">All Properties</span>
+                </div>
+              </div>
+            </div>
+            <div class="nav-item-wrapper nav-item-wrapper--xs">
+              <div class="nav-item nav-item--xs nav-item--default nav-item--last-child caption-xs" style="position:relative;" onclick="setActive(this)">
+                <span class="nav-item--branch"></span>
+                <div class="nav-item__left">
+                  <span class="nav-item__icon"><i class="fello-icon-folder-list icon-xs"></i></span>
+                  <span class="nav-item__text">My Listings</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-item-wrapper nav-item-wrapper--xs">
+            <div class="nav-item nav-item--xs nav-item--default caption-xs" onclick="setActive(this)">
+              <div class="nav-item__left">
+                <span class="nav-item__icon"><i class="fello-icon-folder-list icon-xs"></i></span>
+                <span class="nav-item__text">Dashboard</span>
+              </div>
+            </div>
+          </div>
+          <div class="nav-item-wrapper nav-item-wrapper--xs">
+            <div class="nav-item nav-item--xs nav-item--default caption-xs" onclick="setActive(this)">
+              <div class="nav-item__left">
+                <span class="nav-item__icon"><i class="fello-icon-folder-list icon-xs"></i></span>
+                <span class="nav-item__text">Reports</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size:13px;color:#6B748E;max-width:200px;line-height:1.6;">
+        <strong>Click items</strong> to set active.<br>
+        <strong>Click titles</strong> to expand/collapse.<br>
+        Active = bg #FDF1EF + coral icon.<br>
+        Hover = bg #F1F4F7.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 7: VISUAL CHECKLIST -->
+<!-- ============================================================ -->
+<div class="section">
+  <h2>7. Visual Checklist</h2>
+  <div class="card" style="font-size:14px;line-height:2;">
+    <ul style="list-style:none;padding:0;columns:2;column-gap:32px;">
+      <li>☐ caption-md = 14px/20px/500 (medium, NOT semi-bold)</li>
+      <li>☐ caption-sm = 12px/18px/500</li>
+      <li>☐ caption-xs = 10px/16px/500</li>
+      <li>☐ title-md = 14px/20px/600 (nav title + group header)</li>
+      <li>☐ paragraph-sm = 12px/18px/400 (supporting text)</li>
+      <li>☐ Item border-radius = 4px (not 6px or 8px)</li>
+      <li>☐ Icon-only border-radius = 8px</li>
+      <li>☐ md wrapper padding = 2px 4px</li>
+      <li>☐ sm wrapper padding = 0 4px (no top/bottom)</li>
+      <li>☐ xs wrapper padding = 0 (flush)</li>
+      <li>☐ Item padding xs/sm = 6px 12px</li>
+      <li>☐ Item padding md = 8px 12px</li>
+      <li>☐ Leading icon xs/sm = 20px, md = 24px</li>
+      <li>☐ Trailing icon = 16px always</li>
+      <li>☐ Default hover = #F1F4F7 (bg-primary_hover)</li>
+      <li>☐ Active bg = #FDF1EF (bg-brand-primary)</li>
+      <li>☐ Active hover bg = #FDE7E3 (bg-brand-primary_alt)</li>
+      <li>☐ Active icon = #FF725C (fg-brand-primary, coral)</li>
+      <li>☐ Branch line = #CCD6DC (border-secondary)</li>
+      <li>☐ Children indent = 32px padding-left</li>
+      <li>☐ Vertical branch line at left 22px from children wrapper</li>
+      <li>☐ L-branch on child at left -10px, width 10px, height 50%</li>
+      <li>☐ Trailing button margin = -2px -8px -2px 0</li>
+      <li>☐ Group header: title-md, padding 6px 12px</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // Toggle expand/collapse on nav titles
+  function toggleExpand(titleEl) {
+    const expanded = titleEl.dataset.expanded === 'true';
+    const chevron = titleEl.querySelector('.chevron-icon');
+    const sibling = titleEl.closest('.nav-item-wrapper').nextElementSibling;
+
+    if (expanded) {
+      titleEl.dataset.expanded = 'false';
+      chevron.classList.remove('nav-item__icon--rotate');
+      if (sibling && sibling.classList.contains('expand-target')) sibling.style.display = 'none';
+    } else {
+      titleEl.dataset.expanded = 'true';
+      chevron.classList.add('nav-item__icon--rotate');
+      if (sibling && sibling.classList.contains('expand-target')) sibling.style.display = '';
+    }
+  }
+
+  // Set active state on leaf items
+  function setActive(el) {
+    // Clear all active states in the list
+    document.querySelectorAll('#interactive-list .nav-item').forEach(item => {
+      item.classList.remove('nav-item--active');
+      item.classList.add('nav-item--default');
+      item.querySelectorAll('.nav-item__icon').forEach(ic => ic.classList.remove('nav-item__icon--active'));
+    });
+    // Set this one active
+    el.classList.add('nav-item--active');
+    el.classList.remove('nav-item--default');
+    el.querySelectorAll('.nav-item__icon').forEach(ic => ic.classList.add('nav-item__icon--active'));
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,929 @@
+/* ===== Navigation & lists ===== */
+
+/* .fello-sidenav — outer white card container for the vertical app sidebar (expanded state) */
+.fello-sidenav {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+  padding: 12px;
+  width: 300px;
+  height: 100%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px;
+  box-shadow: 0 24px 48px -12px var(--ring-gray-primary);
+  transition: width 150ms ease-in-out;
+}
+
+/* .fello-sidenav--collapsed — collapsed sidebar: 64px, no border/shadow, transparent */
+.fello-sidenav--collapsed {
+  width: 64px;
+  align-items: flex-start;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* .fello-sidenav__center — flex-1 scrollable middle section that fills remaining space */
+.fello-sidenav__center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  overflow-y: auto;
+}
+
+/* .fello-sidenav__end — bottom section, pinned below the last separator, never scrolls */
+.fello-sidenav__end {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* .fello-sidenav__sep — thin 1px divider between sidebar sections (START→CENTER) */
+.fello-sidenav__sep {
+  width: 100%;
+  height: 0;
+  border-top: 1px solid var(--border-secondary);
+  margin: 8px 0;
+}
+
+/* .fello-sidenav__sep--xs — tighter divider variant between CENTER→END sections (4px margin) */
+.fello-sidenav__sep--xs {
+  margin: 4px 0;
+}
+
+/* .fello-sidenav__toggle — small expand/collapse button sticking out the right edge, shown on hover */
+.fello-sidenav__toggle {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  right: -12px;
+  top: 52px;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-secondary);
+  box-shadow: 0 1px 2px 0 rgba(73, 88, 131, 0.08);
+  color: var(--fg-primary);
+  cursor: pointer;
+}
+.fello-sidenav:hover .fello-sidenav__toggle { display: flex; }
+.fello-sidenav__toggle:hover { background: var(--bg-secondary); }
+
+/* .fello-sidenav__item — single icon+label nav row inside the sidebar (default state) */
+.fello-sidenav__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 150ms ease-out;
+}
+.fello-sidenav__item:hover,
+.fello-sidenav__item:focus-visible { background: var(--bg-secondary); }
+.fello-sidenav__item-icon { width: 24px; height: 24px; flex-shrink: 0; }
+.fello-sidenav__item-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* .fello-sidenav__item--active — selected nav row: peach brand background + coral icon */
+.fello-sidenav__item--active {
+  background: var(--bg-brand-primary);
+}
+.fello-sidenav__item--active:hover,
+.fello-sidenav__item--active:focus-visible { background: var(--bg-brand-primary_alt); }
+.fello-sidenav__item--active .fello-sidenav__item-icon { color: var(--fg-brand-primary); }
+
+/* .fello-sidenav__item--icon-only — collapsed-mode nav row: centered icon, 8px square, rounded-lg */
+.fello-sidenav__item--icon-only {
+  justify-content: center;
+  width: auto;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+/* .fello-list — standalone vertical navigation/menu list wrapper (zero gap between items) */
+.fello-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* .fello-list__group-title — heavier section heading above a group of list/nav items */
+.fello-list__group-title {
+  padding: 6px 12px;
+  color: var(--text-primary);
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+/* .fello-list__children — indented wrapper for inline-expanded nested nav children with branch lines */
+.fello-list__children {
+  position: relative;
+  padding-left: 32px;
+  overflow: hidden;
+}
+.fello-list__children::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 22px;
+  width: 0;
+  height: 100%;
+  border-left: 1px solid var(--border-secondary);
+}
+
+/* .fello-list__child — a nested child row carrying an L-shaped branch connector to its parent line */
+.fello-list__child { position: relative; }
+.fello-list__child::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -10px;
+  width: 10px;
+  height: 50%;
+  border-left: 1px solid var(--border-secondary);
+  border-bottom: 1px solid var(--border-secondary);
+  border-bottom-left-radius: 4px;
+  z-index: 1;
+}
+
+/* .fello-nav-popover — 240px floating fly-out panel for popover-type nav items (opens to the right) */
+.fello-nav-popover {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  margin-left: 8px;
+  width: 240px;
+  max-height: 440px;
+  overflow-y: auto;
+  padding: 8px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 8px;
+  box-shadow: 0 24px 48px -12px var(--ring-gray-primary);
+  z-index: 50;
+}
+.fello-nav-popover__arrow {
+  position: absolute;
+  left: -6px;
+  top: 16px;
+  width: 10px;
+  height: 10px;
+  background: var(--bg-primary);
+  border-left: 1px solid var(--border-secondary);
+  border-bottom: 1px solid var(--border-secondary);
+  transform: rotate(45deg);
+}
+.fello-nav-popover__title {
+  padding: 8px;
+  margin: 8px;
+  color: var(--text-primary);
+  font-family: Inter, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+/* .fello-nav-tooltip — dark hover tooltip shown to the right of a collapsed icon-only nav item */
+.fello-nav-tooltip {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(4px);
+  margin-left: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--tooltip-bg-primary-dark);
+  color: var(--fg-white);
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  width: fit-content;
+  max-width: 200px;
+  white-space: nowrap;
+  box-shadow: 0 4px 6px -2px #4958830a, 0 12px 16px -4px #49588329;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 150ms ease-out;
+}
+.fello-sidenav__item--icon-only:hover + .fello-nav-tooltip,
+.fello-nav-tooltip-wrap:hover .fello-nav-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+}
+.fello-nav-tooltip__arrow {
+  position: absolute;
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 12px;
+  height: 12px;
+  background: var(--tooltip-bg-primary-dark);
+  border-radius: 1px;
+}
+
+/* .fello-topbar — transparent 44px header bar that sits on the dark layout shell */
+.fello-topbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 3;
+  height: 44px;
+  background: transparent;
+}
+/* .fello-topbar__group — left or right cluster of header components, centered vertically */
+.fello-topbar__group {
+  display: flex;
+  align-items: center;
+}
+
+/* .fello-header-actions — row of icon-only utility buttons in the header right group */
+.fello-header-actions {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* .fello-header-action — single 32px transparent icon button with white icon (header utility) */
+.fello-header-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  margin-right: 4px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fg-white);
+  cursor: pointer;
+  transition: background-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+.fello-header-action > * { width: 16px; height: 16px; }
+.fello-header-action:hover {
+  background: var(--bg-secondary);
+  box-shadow: 0 1px 2px 0 rgba(73, 88, 131, 0.08);
+}
+.fello-header-action:focus-visible {
+  background: var(--bg-secondary);
+  box-shadow: 0 0 0 4px rgba(73, 88, 131, 0.08), 0 1px 2px 0 rgba(73, 88, 131, 0.04), 0 1px 3px 0 rgba(73, 88, 131, 0.16);
+}
+
+/* .fello-header-actions__sep — vertical 1px divider placed after the first header action button */
+.fello-header-actions__sep {
+  width: 1px;
+  align-self: stretch;
+  margin: 8px;
+  background: var(--border-secondary);
+}
+
+/* .fello-breadcrumbs — horizontal trail of breadcrumb items separated by chevrons (medium size) */
+.fello-breadcrumbs {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+/* .fello-breadcrumbs__item — clickable non-current crumb: tertiary text, underline on hover, trailing chevron */
+.fello-breadcrumbs__item {
+  position: relative;
+  padding-right: 20px;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 150ms ease-out;
+}
+.fello-breadcrumbs__item:hover,
+.fello-breadcrumbs__item:focus-visible { text-decoration-color: currentColor; }
+.fello-breadcrumbs__item::after {
+  content: "\203A";
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 16px;
+}
+
+/* .fello-breadcrumbs__current — last crumb: the current page, primary text, not clickable, no chevron */
+.fello-breadcrumbs__current {
+  padding-right: 0;
+  color: var(--text-primary);
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  cursor: default;
+}
+
+/* .fello-breadcrumbs--sm — small breadcrumb size: 12px/18px text (chevron stays 16px) */
+.fello-breadcrumbs--sm .fello-breadcrumbs__item,
+.fello-breadcrumbs--sm .fello-breadcrumbs__current {
+  font-size: 12px;
+  line-height: 18px;
+}
+
+/* .fello-tabs — primary tab header row with the gray baseline separator (h-10 tabs) */
+.fello-tabs {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+}
+.fello-tabs::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--border-tertiary);
+}
+
+/* .fello-tab — a single primary tab: 40px tall, transparent, coral underline when active */
+.fello-tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 40px;
+  padding: 10px 4px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 150ms ease-out;
+}
+.fello-tab:hover { background: var(--bg-secondary); }
+.fello-tab:focus-visible { background: var(--bg-tertiary); }
+
+/* .fello-tab--active — active primary tab: 2px coral indicator overlaying the gray baseline */
+.fello-tab--active { background: transparent; }
+.fello-tab--active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--border-brand-solid);
+  z-index: 1;
+}
+.fello-tab--active:hover { background: var(--bg-brand-primary_alt); }
+.fello-tab--active:focus-visible { background: var(--bg-brand-primary); }
+
+/* .fello-tab--disabled — non-interactive tab at 40% opacity */
+.fello-tab--disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+.fello-tab__icon { width: 16px; height: 16px; }
+
+/* .fello-tab__badge — gray-light count pill that trails the tab label (same for all tab types) */
+.fello-tab__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  padding: 0 6px;
+  border-radius: 9999px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-family: Inter, sans-serif;
+  font-size: 10px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+/* .fello-tabs--secondary — segmented pill container: gray bg with solid border, flush tabs */
+.fello-tabs--secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-secondary-solid);
+  border-radius: 6px;
+}
+.fello-tabs--secondary::after { content: none; }
+
+/* .fello-tab--secondary — secondary pill tab: 32px tall, rounded-md, transparent border */
+.fello-tab--secondary {
+  height: 32px;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: var(--bg-secondary);
+}
+.fello-tab--secondary:hover { background: var(--bg-secondary_hover); }
+.fello-tab--secondary:focus-visible { background: var(--bg-quaternary); }
+.fello-tab--secondary.fello-tab--active {
+  margin: -1px;
+  z-index: 1;
+  background: var(--bg-primary);
+  border-color: var(--border-secondary-solid);
+}
+.fello-tab--secondary.fello-tab--active::after { content: none; }
+.fello-tab--secondary.fello-tab--active:hover { background: var(--bg-secondary); }
+.fello-tab--secondary.fello-tab--active:focus-visible { background: var(--bg-tertiary); }
+
+/* .fello-tabs--tertiary — borderless white tab container, 4px gap, background-swap active state */
+.fello-tabs--tertiary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-primary);
+  border-radius: 6px;
+}
+.fello-tabs--tertiary::after { content: none; }
+
+/* .fello-tab--tertiary — tertiary tab: 32px, 6px padding, teal background when active */
+.fello-tab--tertiary {
+  height: 32px;
+  padding: 6px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+}
+.fello-tab--tertiary:hover { background: var(--bg-secondary); }
+.fello-tab--tertiary:focus-visible {
+  background: var(--bg-secondary);
+  box-shadow: var(--ring-gray-primary);
+}
+.fello-tab--tertiary.fello-tab--active { background: var(--bg-brand-secondary); }
+.fello-tab--tertiary.fello-tab--active::after { content: none; }
+.fello-tab--tertiary.fello-tab--active:hover { background: var(--bg-brand-secondary_alt); }
+.fello-tab--tertiary.fello-tab--active:focus-visible {
+  background: var(--bg-brand-secondary_alt);
+  box-shadow: var(--ring-brand-secondary);
+}
+
+/* .fello-stepper — horizontal step header row (circles + labels + connectors) */
+.fello-stepper {
+  display: flex;
+  align-items: center;
+}
+
+/* .fello-stepper--vertical — vertical stacked stepper layout */
+.fello-stepper--vertical {
+  display: block;
+}
+
+/* .fello-stepper__step — one clickable step header with absolutely-positioned circle (44px left pad) */
+.fello-stepper__step {
+  position: relative;
+  width: auto;
+  padding: 8px 12px 8px 44px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 150ms ease-out;
+}
+.fello-stepper__step:hover { background: var(--bg-secondary_hover); }
+.fello-stepper--vertical .fello-stepper__step { width: 100%; }
+
+/* .fello-stepper__circle — 20px empty circle indicator (default/upcoming step: gray border) */
+.fello-stepper__circle {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  border: 2.5px solid var(--fg-disabled);
+  background: var(--bg-primary);
+  box-sizing: border-box;
+}
+.fello-stepper__circle > svg { width: 12px; height: 12px; color: var(--fg-white); }
+
+/* .fello-stepper__circle--selected — active step circle: coral border + soft coral ring (still empty) */
+.fello-stepper__circle--selected {
+  border-color: var(--border-brand-solid);
+  background: var(--bg-primary);
+  box-shadow: 0 0 0 4px rgba(255, 114, 92, 0.24);
+}
+
+/* .fello-stepper__circle--completed — filled gray circle holding a white tick icon */
+.fello-stepper__circle--completed {
+  border-color: var(--fg-quaternary);
+  background: var(--fg-quaternary);
+}
+
+/* .fello-stepper__circle--error — filled red circle holding a white alert icon */
+.fello-stepper__circle--error {
+  border-color: var(--fg-error-primary);
+  background: var(--bg-error-solid);
+}
+
+/* .fello-stepper__label — step title text, 12px/18px/500, color varies by state class */
+.fello-stepper__label {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--text-disabled);
+}
+.fello-stepper__step--selected .fello-stepper__label { color: var(--text-primary); }
+.fello-stepper__step--completed .fello-stepper__label { color: var(--text-tertiary); }
+.fello-stepper__step--error .fello-stepper__label { color: var(--text-error-primary); }
+
+/* .fello-stepper__desc — step description text, 12px/18px/400, color varies by state class */
+.fello-stepper__desc {
+  margin: 0;
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--text-placeholder);
+}
+.fello-stepper__step--selected .fello-stepper__desc,
+.fello-stepper__step--completed .fello-stepper__desc { color: var(--text-tertiary); }
+.fello-stepper__step--error .fello-stepper__desc { color: var(--text-error-primary); }
+
+/* .fello-stepper__step--error:hover — error steps use a light-red hover background */
+.fello-stepper__step--error:hover { background: var(--bg-error-primary); }
+
+/* .fello-stepper__connector — 24px x 1px horizontal line between step headers */
+.fello-stepper__connector {
+  width: 24px;
+  height: 1px;
+  background: var(--border-secondary);
+}
+
+/* .fello-stepper__content — vertical-stepper content area with the 1px connector line on its left */
+.fello-stepper__content {
+  position: relative;
+  padding-left: 44px;
+}
+.fello-stepper__content::before {
+  content: "";
+  position: absolute;
+  left: 22px;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  background: var(--border-secondary);
+}
+
+/* .fello-paginator — full-width pagination bar; size selector pinned left, page nav centered */
+.fello-paginator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 6px 0;
+}
+
+/* .fello-paginator__sizer — absolute-left teal link button that opens the page-size list box */
+.fello-paginator__sizer {
+  position: absolute;
+  left: 0;
+}
+.fello-paginator__sizer-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-brand-secondary);
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  outline: none;
+}
+.fello-paginator__sizer-trigger:hover { text-decoration-color: var(--text-brand-secondary); }
+.fello-paginator__sizer-trigger svg { width: 16px; height: 16px; }
+
+/* .fello-paginator__nav — centered group of prev/page/next controls (4px gap) */
+.fello-paginator__nav {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+/* .fello-paginator__page — 32px square page-number button, teal text, light-teal hover */
+.fello-paginator__page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-brand-secondary);
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+.fello-paginator__page:hover {
+  background: var(--bg-brand-secondary);
+  box-shadow: var(--shadow-xs);
+}
+.fello-paginator__page:focus-visible {
+  box-shadow: 0 0 0 4px rgba(11, 165, 167, 0.24), 0 1px 2px 0 rgba(17, 23, 41, 0.16);
+}
+
+/* .fello-paginator__page--current — current page: gray background, dark text, non-interactive */
+.fello-paginator__page--current {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: default;
+  pointer-events: none;
+}
+
+/* .fello-paginator__step — Previous/Next text+icon button (32px tall, teal) */
+.fello-paginator__step {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-brand-secondary);
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+.fello-paginator__step:hover { background: var(--bg-brand-secondary); }
+.fello-paginator__step:focus-visible {
+  box-shadow: 0 0 0 4px rgba(11, 165, 167, 0.24), 0 1px 2px 0 rgba(17, 23, 41, 0.16);
+}
+.fello-paginator__step svg { width: 16px; height: 16px; }
+
+/* .fello-paginator__step--icon — compact icon-only prev/next variant (32px square) */
+.fello-paginator__step--icon {
+  justify-content: center;
+  width: 32px;
+  padding: 0;
+}
+
+/* .fello-paginator__step--disabled — prev/next at a boundary: 40% opacity, not allowed */
+.fello-paginator__step--disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* .fello-paginator__ellipsis — non-interactive truncation gap marker (...) */
+.fello-paginator__ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--text-brand-secondary);
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+  cursor: default;
+}
+
+/* .fello-listbox — borderless popover panel for the page-size / filter dropdown options */
+.fello-listbox {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  padding-top: 2px;
+  min-width: 160px;
+  overflow: auto;
+}
+
+/* .fello-list-item — selectable list row: icon/avatar + text column + trailing indicator (MD default) */
+.fello-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  margin: 2px 4px;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: background-color 150ms ease-out;
+}
+.fello-list-item:hover { background: var(--bg-secondary); }
+
+/* .fello-list-item--selected — selected row: gray background plus darker hover */
+.fello-list-item--selected { background: var(--bg-secondary); }
+.fello-list-item--selected:hover { background: var(--bg-secondary_hover); }
+
+/* .fello-list-item--disabled — muted, non-interactive row */
+.fello-list-item--disabled {
+  color: var(--text-disabled);
+  pointer-events: none;
+}
+.fello-list-item--disabled.fello-list-item--selected { background: var(--bg-secondary); }
+
+/* .fello-list-item--danger — destructive row: red text, light-red hover */
+.fello-list-item--danger { color: var(--text-error-primary); }
+.fello-list-item--danger:hover { background: var(--bg-error-primary); }
+
+/* .fello-list-item--sm — small list row: no outer margin, 6px/16px padding, 8px radius */
+.fello-list-item--sm {
+  margin: 0;
+  padding: 6px 16px;
+  border-radius: 8px;
+}
+
+/* .fello-list-item--lg — large list row: 10px/12px padding, 16px/24px text */
+.fello-list-item--lg {
+  padding: 10px 12px;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* .fello-list-item__body — left content cluster: leading icon/avatar + text column */
+.fello-list-item__body {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* .fello-list-item__text — vertical text column holding primary text and supporting text */
+.fello-list-item__text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  text-align: left;
+  word-break: break-word;
+}
+
+/* .fello-list-item__subtext — secondary supporting line below the primary text (12px/18px/400) */
+.fello-list-item__subtext {
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--text-tertiary);
+}
+
+/* .fello-list-item__check — teal single-select checkmark icon on the right of a selected row */
+.fello-list-item__check {
+  flex-shrink: 0;
+  color: var(--fg-brand-secondary);
+}
+
+/* .fello-list-item__divider — thin tertiary divider line between list rows */
+.fello-list-item__divider {
+  height: 1px;
+  width: 100%;
+  background: var(--border-tertiary);
+  border: none;
+}
+
+/* .fello-avatar — circular user indicator, default MD 48px, text/icon with subtle border */
+.fello-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-secondary);
+  text-align: center;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  box-sizing: border-box;
+  transition: box-shadow 150ms ease-out;
+}
+.fello-avatar:hover,
+.fello-avatar:focus-visible { box-shadow: var(--shadow-xs); }
+
+/* .fello-avatar__img — image fill for an image-type avatar (no border, object-cover) */
+.fello-avatar__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* .fello-avatar--image — image avatar: removes the border so the photo fills edge to edge */
+.fello-avatar--image { border: none; }
+
+/* .fello-avatar--xs — extra-small avatar: 32px, 10px/16px text, 20px icon */
+.fello-avatar--xs {
+  width: 32px;
+  height: 32px;
+  font-size: 10px;
+  line-height: 16px;
+}
+.fello-avatar--xs svg { width: 20px; height: 20px; }
+
+/* .fello-avatar--sm — small avatar: 40px, 12px/18px text, 24px icon */
+.fello-avatar--sm {
+  width: 40px;
+  height: 40px;
+  font-size: 12px;
+  line-height: 18px;
+}
+.fello-avatar--sm svg { width: 24px; height: 24px; }
+
+/* .fello-avatar--md — medium (default) avatar: 48px, 14px/20px text, 28px icon */
+.fello-avatar--md {
+  width: 48px;
+  height: 48px;
+  font-size: 14px;
+  line-height: 20px;
+}
+.fello-avatar--md svg { width: 28px; height: 28px; }
+
+/* .fello-avatar--lg — large avatar: 56px, 16px/24px text, 32px icon */
+.fello-avatar--lg {
+  width: 56px;
+  height: 56px;
+  font-size: 16px;
+  line-height: 24px;
+}
+.fello-avatar--lg svg { width: 32px; height: 32px; }
+
+/* .fello-avatar--xl — extra-large avatar: 64px, same 16px/24px text as LG, 32px icon */
+.fello-avatar--xl {
+  width: 64px;
+  height: 64px;
+  font-size: 16px;
+  line-height: 24px;
+}
+.fello-avatar--xl svg { width: 32px; height: 32px; }

@@ -1,0 +1,33 @@
+---
+name: fello-design-system
+description: Fello brand + design system for any generated UI, HTML, chart, dashboard, story, or visual. Use whenever building or styling output that a person will see — apply Fello's palette, typography, and components so it looks on-brand. Triggers on build/generate/design/style a page, component, chart, dashboard, story, report, HTML, or visual; or any request to "make it on-brand / Fello-styled".
+---
+
+# Fello Design System
+
+Apply this whenever you generate something visual (HTML, a story/dashboard layout, a chart, a report). Goal: output looks like Fello, not generic.
+
+## Brand foundation (NON-NEGOTIABLE)
+- **Light mode only.** White/very-light backgrounds. Never dark gradients, glows, neon, or orbs.
+- **Palette:** plum `#353E5A` (primary text/headings), coral `#FF725C` (primary CTA / accent only), teal `#098486` (links). Surfaces: white `#FFFFFF`, subtle `#F7F7F9`, borders `#E8ECF1`.
+- **Chart series order:** coral `#FF725C`, teal `#098486`, plum `#353E5A`, amber `#E8A33D`, violet `#7C6BD9`.
+- **Typography:** Inter. Headings ≤ 24px (heading-md is the hard max). Body text `#353E5A`.
+- **No emoji as icons.** Use the Fello icon font / component icons.
+- **Coral is for the primary action only** — don't flood the UI with coral.
+
+## Reference files (read before building)
+All under `docs/fello-design-system/`:
+- `colors_and_type.css` — the foundation tokens (CSS custom properties) + typography classes. Use `var(--token)`, never raw hex when a token exists.
+- `fello-components.css` — the `.fello-*` component library (buttons, cards, badges, tables, forms, callouts, etc.). **Prefer these classes; don't hand-write component CSS.**
+- `uploads/<component>.md` — per-component spec (exact classes, variants, sizes). Read the relevant one before building that component.
+- `fello-logo.svg` / `fello-icon.svg` — the real logo. Never hand-draw a logo.
+
+## How to build on-brand HTML
+1. Read `colors_and_type.css` + `fello-components.css` (and the relevant `uploads/<component>.md`).
+2. Link/inline those stylesheets, then build markup with `.fello-*` classes + `var(--token)` values.
+3. Flow top-down (never vertically center a full page). Use `.fello-card` / `.fello-grid` for layout.
+4. Headings ≤ 24px, plum text, coral only for the primary CTA, charts in the series order above.
+
+## How to style charts / dashboards / stories
+- Use the chart series order above (coral first).
+- Keep surfaces light, text plum, accents coral/teal. Match the foundation tokens.
