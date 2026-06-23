@@ -22,6 +22,11 @@ All under `docs/fello-design-system/`:
 - `uploads/<component>.md` — per-component spec (exact classes, variants, sizes). Read the relevant one before building that component.
 - `fello-logo.svg` / `fello-icon.svg` — the real logo. Never hand-draw a logo.
 
+## Deliver dashboards/reports as a STORY (the shareable artifact)
+A dashboard, report, or multi-section HTML page should be saved as a **Story** — that's the shareable, side-panel artifact (it gets its own URL + shows in Stories). Don't just render it inline in the chat reply.
+
+**To do this:** call `create_story` with a title and `content` that contains the Fello HTML inside a ```html fenced block (plus any `<chart>` tags). The story renders the HTML artifact. Inline-in-chat HTML is only a quick preview; the artifact is the story.
+
 ## How to build on-brand HTML
 **CRITICAL — to render, the HTML MUST be inside a ```html fenced code block.** A full HTML doc pasted as raw text will NOT render (it shows as text). Always wrap it:
 
