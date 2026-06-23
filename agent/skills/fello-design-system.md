@@ -22,11 +22,10 @@ All under `docs/fello-design-system/`:
 - `uploads/<component>.md` — per-component spec (exact classes, variants, sizes). Read the relevant one before building that component.
 - `fello-logo.svg` / `fello-icon.svg` — the real logo. Never hand-draw a logo.
 
-## ⚠️ Dashboards MUST be created via `create_story` — never pasted in the chat reply
-`<grid>`, `<chart>`, `<table>`, `<citation-number>` tags ONLY render inside a **Story**. If you write them in a normal chat answer they show as raw text (broken). So for ANY dashboard/report (native charts OR HTML):
-- Call **`create_story`** with the dashboard as the `content`.
-- Do NOT paste `<grid>`/`<chart>`/`<table>` markup directly in your chat message.
-- The chat should just say "Built the dashboard →" and link/open the story; the rendered dashboard lives in the story.
+## Answer normally; only build a STORY when explicitly asked for a dashboard/report
+- **Normal questions → answer in the chat as usual** (text + inline charts via the chart tools). Do NOT create a story for a plain question or follow-up.
+- **Only when the user asks for a dashboard / report / saved or shareable artifact** → use `create_story`.
+- When you DO build a story: put the `<grid>`/`<chart>`/`<table>` markup in the story `content` via `create_story` — do NOT paste that markup into a chat reply (those tags only render inside a story; in chat they show as raw text). A short chat line like "Built it → see the story" is enough.
 
 ## Deliver dashboards/reports as a STORY (the shareable artifact)
 A dashboard, report, or multi-section HTML page should be saved as a **Story** — that's the shareable, side-panel artifact (it gets its own URL + shows in Stories). Don't just render it inline in the chat reply.
