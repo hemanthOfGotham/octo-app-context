@@ -22,6 +22,12 @@ All under `docs/fello-design-system/`:
 - `uploads/<component>.md` — per-component spec (exact classes, variants, sizes). Read the relevant one before building that component.
 - `fello-logo.svg` / `fello-icon.svg` — the real logo. Never hand-draw a logo.
 
+## ⚠️ Dashboards MUST be created via `create_story` — never pasted in the chat reply
+`<grid>`, `<chart>`, `<table>`, `<citation-number>` tags ONLY render inside a **Story**. If you write them in a normal chat answer they show as raw text (broken). So for ANY dashboard/report (native charts OR HTML):
+- Call **`create_story`** with the dashboard as the `content`.
+- Do NOT paste `<grid>`/`<chart>`/`<table>` markup directly in your chat message.
+- The chat should just say "Built the dashboard →" and link/open the story; the rendered dashboard lives in the story.
+
 ## Deliver dashboards/reports as a STORY (the shareable artifact)
 A dashboard, report, or multi-section HTML page should be saved as a **Story** — that's the shareable, side-panel artifact (it gets its own URL + shows in Stories). Don't just render it inline in the chat reply.
 
