@@ -22,6 +22,13 @@ All under `docs/fello-design-system/`:
 - `uploads/<component>.md` — per-component spec (exact classes, variants, sizes). Read the relevant one before building that component.
 - `fello-logo.svg` / `fello-icon.svg` — the real logo. Never hand-draw a logo.
 
+## Two output modes — NEVER mix them
+**1. STORY (native charts) — the default for dashboards/reports.** Content is markdown + Nao tags ONLY: `<grid>`, `<chart>`, `<table>`, `<citation-number>`. **NO `<style>`, NO CSS, NO raw HTML, NO `<!DOCTYPE>`.** Nao renders + styles the charts/KPIs itself (already in the Fello palette — coral/teal/plum). Adding CSS or HTML here just leaks as raw text. Use `chart_type="kpi_card"` for KPI tiles, `bar`/`line`/`pie`/`stacked_bar` for charts, `<table>` for tables.
+
+**2. HTML artifact — only when the user explicitly wants custom HTML.** ENTIRE output is ONE ```html fenced block with its own `<style>`. No Nao `<chart>` tags inside it.
+
+Pick ONE mode per artifact. Default to STORY for "dashboard/report". Never put `<style>`/CSS in a story; never put `<chart>` tags in an HTML artifact.
+
 ## Answer normally; only build a STORY when explicitly asked for a dashboard/report
 - **Normal questions → answer in the chat as usual** (text + inline charts via the chart tools). Do NOT create a story for a plain question or follow-up.
 - **Only when the user asks for a dashboard / report / saved or shareable artifact** → use `create_story`.
